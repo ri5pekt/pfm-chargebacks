@@ -15,7 +15,7 @@
       <div class="settings-card">
         <TabView v-model:activeIndex="activeTab">
           <!-- Placeholder Mappings Tab -->
-          <TabPanel header="Placeholder Mappings">
+          <TabPanel header="Placeholder Mappings" :value="0">
             <div class="tab-content">
               <div class="section-header">
                 <h2>Placeholder Mappings</h2>
@@ -43,7 +43,7 @@
                     <template #body="{ data }">
                       <InputText
                         :modelValue="data.woo_field ?? ''"
-                        @update:modelValue="(val: string) => setMappingField(data.id, val)"
+                        @update:modelValue="(val: string | undefined) => setMappingField(data.id, val ?? '')"
                         @blur="() => commitMapping(data)"
                         class="mapping-input"
                       />
@@ -85,7 +85,7 @@
           </TabPanel>
 
           <!-- Google Drive Tab -->
-          <TabPanel header="Google Drive Connection">
+          <TabPanel header="Google Drive Connection" :value="1">
             <div class="tab-content">
               <div class="section-header">
                 <h2>Google Drive Connection</h2>
@@ -120,7 +120,7 @@
           </TabPanel>
 
           <!-- Users Tab -->
-          <TabPanel header="Users">
+          <TabPanel header="Users" :value="2">
             <div class="tab-content">
               <!-- Change Own Password Section -->
               <div class="section-header">
@@ -212,7 +212,7 @@
                     <Column header="Actions" style="width: 100px">
                       <template #body="{ data }">
                         <Button
-                          v-if="data.id !== auth.user?.userId"
+                          v-if="data.id !== auth.user?.id"
                           icon="pi pi-trash"
                           size="small"
                           text
