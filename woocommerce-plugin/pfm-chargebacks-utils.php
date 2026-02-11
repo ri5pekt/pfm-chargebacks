@@ -295,6 +295,13 @@ class PFM_Chargebacks_Utils {
      * @return string|null
      */
     private function get_shipping_carrier( $order ): ?string {
+        // First try AfterShip provider name (simpler field)
+        $aftership_provider = $order->get_meta( '_aftership_tracking_provider_name' );
+        if ( ! empty( $aftership_provider ) ) {
+            return $aftership_provider;
+        }
+
+        // Fallback to WooCommerce Shipment Tracking items
         $tracking_items = $order->get_meta( '_wc_shipment_tracking_items' );
         
         if ( empty( $tracking_items ) || ! is_array( $tracking_items ) ) {
@@ -310,8 +317,8 @@ class PFM_Chargebacks_Utils {
 
             $carrier = null;
             
-            // If tracking_provider is "Custom", use custom_tracking_provider
-            if ( isset( $item['tracking_provider'] ) && strtolower( $item['tracking_provider'] ) === 'custom' ) {
+            // If tracking_provider is empty or "Custom", use custom_tracking_provider
+            if ( empty( $item['tracking_provider'] ) || strtolower( $item['tracking_provider'] ) === 'custom' ) {
                 $carrier = $item['custom_tracking_provider'] ?? null;
             } else {
                 // Otherwise use tracking_provider
