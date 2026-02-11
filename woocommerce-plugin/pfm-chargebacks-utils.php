@@ -144,6 +144,10 @@ class PFM_Chargebacks_Utils {
                 return $this->get_dispute_reason_code_and_reason( $order );
             case 'reason_code_and_title':
                 return $this->get_dispute_reason_code_and_title( $order );
+            case 'dispute_reason':
+                return $this->get_dispute_reason( $order );
+            case 'dispute_reason_description':
+                return $this->get_dispute_reason_description( $order );
             case 'subscription_first_order_date':
                 return $this->get_subscription_first_order_date( $order );
             case 'subscription_billing_months':
@@ -384,6 +388,58 @@ class PFM_Chargebacks_Utils {
                     return $reason_code . ' - ' . $title;
                 }
                 return $reason_code ?? $title ?? null;
+            }
+        } catch ( \Exception $e ) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Braintree dispute reason only (e.g., "Fraud")
+     * @param \WC_Order $order
+     * @return string|null
+     */
+    private function get_dispute_reason( $order ): ?string {
+        $transaction_id = $order->get_transaction_id();
+        if ( ! $transaction_id ) {
+            return null;
+        }
+
+        try {
+            $this->configure_braintree();
+
+            $transaction = \Braintree\Transaction::find( $transaction_id );
+            if ( isset( $transaction->disputes ) && is_array( $transaction->disputes ) && ! empty( $transaction->disputes ) ) {
+                $dispute = $transaction->disputes[0];
+                return $dispute->reason ?? null;
+            }
+        } catch ( \Exception $e ) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Braintree dispute reason description (e.g., "Fraud (Card not present)")
+     * @param \WC_Order $order
+     * @return string|null
+     */
+    private function get_dispute_reason_description( $order ): ?string {
+        $transaction_id = $order->get_transaction_id();
+        if ( ! $transaction_id ) {
+            return null;
+        }
+
+        try {
+            $this->configure_braintree();
+
+            $transaction = \Braintree\Transaction::find( $transaction_id );
+            if ( isset( $transaction->disputes ) && is_array( $transaction->disputes ) && ! empty( $transaction->disputes ) ) {
+                $dispute = $transaction->disputes[0];
+                return $dispute->reasonDescription ?? $dispute->reason ?? null;
             }
         } catch ( \Exception $e ) {
             return null;

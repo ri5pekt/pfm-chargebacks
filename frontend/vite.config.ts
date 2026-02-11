@@ -12,16 +12,9 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    strictPort: true,
-    cors: true,
-    hmr: {
-      clientPort: 443,
-      protocol: 'wss',
-      host: 'chargebacks.pfm-qa.com',
-    },
     proxy: {
-      '/api': 'http://backend:3000',
-      '/oauth': 'http://backend:3000',
+      '/api': 'http://localhost:3000',
+      '/oauth': 'http://localhost:3000',
     },
   },
 })
