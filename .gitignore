@@ -40,3 +40,6 @@ backend/uploads/*
 
 # Database
 pgdata/
+
+# WooCommerce plugin (managed separately)
+woocommerce-plugin/
