@@ -14,9 +14,11 @@ export default async function oauthRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: 'Missing code' })
     }
     await handleCallback(code)
-    // Get the origin from the request to redirect properly
-    const origin = request.headers.origin || request.headers.referer?.split('/').slice(0, 3).join('/') || 'http://localhost:5173'
-    reply.redirect(`${origin}/chargebacks?google=connected`)
+    // Construct the redirect URL from the host header
+    const protocol = request.headers['x-forwarded-proto'] || (request.headers.host?.includes('localhost') ? 'http' : 'https')
+    const host = request.headers.host || 'localhost:5173'
+    const redirectUrl = `${protocol}://${host}/chargebacks?google=connected`
+    reply.redirect(redirectUrl)
   })
 
   fastify.get('/api/oauth/google/status', { preHandler: authHook }, async (_request, reply) => {
