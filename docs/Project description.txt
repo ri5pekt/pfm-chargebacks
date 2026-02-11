@@ -1,0 +1,81 @@
+Project description
+
+Build an internal “Chargebacks Automation” dashboard that generates chargeback documents from Google Docs templates stored in a Shared Drive. Admin users create a new chargeback by choosing a template and entering an order ID and title. The backend duplicates the selected template, replaces placeholders, and saves the generated document into a “Generated” folder. The system stores each generated chargeback record with metadata (title, template, order ID, created date, created by) and the resulting Google Doc URL.
+
+Stage 1 focuses on Google integration only: load templates from Google Drive, duplicate a template, update a single test placeholder field to confirm replacement works, and save the new document. WooCommerce order/customer auto-fill is planned for a later stage.
+
+Admin screens
+1) Chargebacks list
+
+Table of generated chargebacks
+
+“New chargeback” button
+
+Columns (suggested): Title, Order ID, Template, Created by, Created date, Doc link, Status
+
+Row actions: Open, Remove (admin-only)
+
+2) New chargeback modal
+
+Opened from the list screen.
+
+Template dropdown (loaded from Google)
+
+Order ID input
+
+Title input (default: Chargeback #<orderId>)
+
+Actions: Cancel, Generate
+
+3) Chargeback detail screen
+
+Redirect after generation.
+
+Back button to list
+
+Title, Order ID, Template name
+
+Created date/time, Created by, Status
+
+Generated Google Doc URL with “Open Doc” button
+
+Controls: Remove (admin-only)
+
+Minimal stack
+Backend
+
+Runtime: Node.js 20+
+
+Framework: Fastify
+
+Language: TypeScript
+
+Database: PostgreSQL
+
+SQL: pg (parameterized queries)
+
+Auth: Long-lived JWT stored in an httpOnly cookie
+
+Google Integration: OAuth 2.0 + Google Drive API + Google Docs API
+
+Dockerized development via Docker Compose
+
+Frontend (Admin Dashboard)
+
+Framework: Vue 3
+
+Build Tool: Vite
+
+Language: TypeScript
+
+Routing: Vue Router
+
+State Management: Pinia
+
+UI Library: PrimeVue
+
+Local Dev / Deployment
+
+Docker + Docker Compose
+
+Optional production reverse proxy: Caddy
