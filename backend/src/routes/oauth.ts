@@ -8,13 +8,15 @@ export default async function oauthRoutes(fastify: FastifyInstance) {
     reply.redirect(url)
   })
 
-  fastify.get('/oauth/google/callback', async (request, reply) => {
+  fastify.get('/api/oauth/google/callback', async (request, reply) => {
     const { code } = request.query as { code: string }
     if (!code) {
       return reply.status(400).send({ error: 'Missing code' })
     }
     await handleCallback(code)
-    reply.redirect('http://localhost:5173/chargebacks?google=connected')
+    // Get the origin from the request to redirect properly
+    const origin = request.headers.origin || request.headers.referer?.split('/').slice(0, 3).join('/') || 'http://localhost:5173'
+    reply.redirect(`${origin}/chargebacks?google=connected`)
   })
 
   fastify.get('/api/oauth/google/status', { preHandler: authHook }, async (_request, reply) => {
