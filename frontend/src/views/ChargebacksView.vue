@@ -14,7 +14,18 @@
         <Button label="New Chargeback" icon="pi pi-plus" @click="router.push('/chargebacks/new')" />
       </div>
 
-      <DataTable :value="chargebacks" :loading="loadingList" stripedRows responsiveLayout="scroll" tableStyle="white-space: nowrap">
+      <DataTable
+        :value="chargebacks"
+        :loading="loadingList"
+        stripedRows
+        responsiveLayout="scroll"
+        tableStyle="white-space: nowrap"
+        paginator
+        :rows="rowsPerPage"
+        :rowsPerPageOptions="[10, 25, 50, 100]"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} chargebacks"
+      >
         <Column field="title" header="Title" />
         <Column field="order_id" header="Order ID" />
         <Column field="template_name" header="Template" />
@@ -74,6 +85,7 @@ const toast = useToast()
 
 const chargebacks = ref<any[]>([])
 const loadingList = ref(false)
+const rowsPerPage = ref(25)
 
 async function fetchChargebacks() {
   loadingList.value = true
