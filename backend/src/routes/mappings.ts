@@ -79,6 +79,8 @@ function autoDetectField(placeholder: string): string | null {
     'date &time': 'woo_order_get_date_paid',
     'order total': 'woo_order_get_total',
     'disputed total': 'special_disputed_total',
+    'transaction total': 'special_transaction_total',
+    'transaction amount': 'special_transaction_total',
     status: 'woo_order_get_status',
     currency: 'woo_order_get_currency',
     // Customer / billing (WC_Order getters)
